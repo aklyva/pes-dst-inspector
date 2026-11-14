@@ -8,7 +8,7 @@
     ".": "./src/inspector.mjs"
   },
   "bin": {
-    "pes-dst-inspector": "./bin/cli.mjs"
+    "pes-dst-inspector": "bin/cli.mjs"
   },
   "files": [
     "src",
