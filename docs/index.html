@@ -354,20 +354,23 @@
       flex-wrap: wrap;
     }
     .wireframe-viewport {
-      background: var(--canvas);
+      background: #ede8df;
       border-radius: var(--rounded-xl);
       border: 1px solid var(--hairline-soft);
-      min-height: 360px;
+      min-height: 420px;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: var(--space-xl);
+      padding: var(--space-md);
       position: relative;
+      overflow: hidden;
     }
     .wireframe-viewport svg {
       width: 100%;
-      max-width: 360px;
-      height: 300px;
+      max-width: 420px;
+      height: 400px;
+      border-radius: 12px;
+      display: block;
     }
 
     /* Swatch & Dropzone Row inside Gallery */
@@ -659,11 +662,17 @@
     </a>
 
     <nav class="pill-tab-group" aria-label="Sample Embroidery Binary Presets">
-      <button type="button" class="button-pill-tab active" id="btnSamplePes">
-        Brother #PES0001 Sample
+      <button type="button" class="button-pill-tab active" data-sample="tudor-rose-crest.pes" id="btnSamplePes">
+        Tudor Rose (.PES)
       </button>
-      <button type="button" class="button-pill-tab" id="btnSampleDst">
-        Tajima 512B .DST Sample
+      <button type="button" class="button-pill-tab" data-sample="golden-retriever-badge.pes" id="btnSampleDogPes">
+        Golden Retriever (.PES)
+      </button>
+      <button type="button" class="button-pill-tab" data-sample="varsity-crest-monogram.dst" id="btnSampleDst">
+        Varsity Shield (.DST)
+      </button>
+      <button type="button" class="button-pill-tab" data-sample="yosemite-sunset-patch.dst" id="btnSampleYosemiteDst">
+        Yosemite Patch (.DST)
       </button>
     </nav>
 
@@ -964,9 +973,9 @@
     const fileInput = document.getElementById('fileInput');
     const gateBanner = document.getElementById('convertGateBanner');
     const gateHeading = document.getElementById('convertGateHeading');
-    const btnPes = document.getElementById('btnSamplePes');
-    const btnDst = document.getElementById('btnSampleDst');
+    const sampleButtons = Array.from(document.querySelectorAll('.button-pill-tab[data-sample]'));
     const hoopBadge = document.getElementById('hoopStatusBadge');
+    const sampleCache = new Map();
 
     function renderReport(report) {
       gateBanner.classList.remove('visible');
@@ -1029,16 +1038,29 @@
       }
     }
 
-    btnPes.addEventListener('click', () => {
-      btnPes.classList.add('active');
-      btnDst.classList.remove('active');
-      handleBytes(createSamplePesBytes(), 'sample-royal-crest.pes');
-    });
+    async function loadStudioSample(sampleFileName) {
+      try {
+        if (!sampleCache.has(sampleFileName)) {
+          const res = await fetch(`./samples/${sampleFileName}`);
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const buf = await res.arrayBuffer();
+          sampleCache.set(sampleFileName, new Uint8Array(buf));
+        }
+        handleBytes(sampleCache.get(sampleFileName), sampleFileName);
+      } catch {
+        const fallback = sampleFileName.endsWith('.dst')
+          ? createSampleDstBytes()
+          : createSamplePesBytes();
+        handleBytes(fallback, sampleFileName);
+      }
+    }
 
-    btnDst.addEventListener('click', () => {
-      btnDst.classList.add('active');
-      btnPes.classList.remove('active');
-      handleBytes(createSampleDstBytes(), 'sample-cap-logo.dst');
+    sampleButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        sampleButtons.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        loadStudioSample(btn.dataset.sample);
+      });
     });
 
     dropzone.addEventListener('click', () => fileInput.click());
@@ -1062,7 +1084,7 @@
       handleBytes(new Uint8Array(buf), file.name);
     });
 
-    handleBytes(createSamplePesBytes(), 'sample-royal-crest.pes');
+    loadStudioSample('tudor-rose-crest.pes');
   </script>
 </body>
 </html>

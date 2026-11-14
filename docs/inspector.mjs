@@ -10,8 +10,8 @@ export const BROTHER_PEC_PALETTE = [
   { pecIndex: 1, code: 'ET-001', name: 'Prussian Blue', hex: '#0e2f76', madeiraCode: '1043' },
   { pecIndex: 2, code: 'ET-007', name: 'Blue', hex: '#1c5aa6', madeiraCode: '1076' },
   { pecIndex: 3, code: 'ET-010', name: 'Teal Green', hex: '#0f8c79', madeiraCode: '1249' },
-  { pecIndex: 4, code: 'ET-014', name: 'Cornflower Blue', hex: '#4f86f7', madeiraCode: '1133' },
-  { pecIndex: 5, code: 'ET-019', name: 'Crimson Red', hex: '#d91e36', madeiraCode: '1147' },
+  { pecIndex: 4, code: 'ET-014', name: 'Teal Green', hex: '#468b97', madeiraCode: '1133' },
+  { pecIndex: 5, code: 'ET-019', name: 'Cardinal Red', hex: '#b8292f', madeiraCode: '1147' },
   { pecIndex: 6, code: 'ET-020', name: 'Reddish Brown', hex: '#8c3b2b', madeiraCode: '1144' },
   { pecIndex: 7, code: 'ET-021', name: 'Magenta Rose', hex: '#c72c82', madeiraCode: '1109' },
   { pecIndex: 8, code: 'ET-025', name: 'Harvest Gold', hex: '#eab308', madeiraCode: '1025' },
@@ -22,8 +22,48 @@ export const BROTHER_PEC_PALETTE = [
   { pecIndex: 13, code: 'ET-052', name: 'Metallic Gold', hex: '#d97706', madeiraCode: '1024' },
   { pecIndex: 14, code: 'ET-056', name: 'Warm Blush Pink', hex: '#f472b6', madeiraCode: '1116' },
   { pecIndex: 15, code: 'ET-058', name: 'Snow White', hex: '#f8fafc', madeiraCode: '1001' },
-  { pecIndex: 16, code: 'ET-060', name: 'Jet Black', hex: '#111827', madeiraCode: '1000' }
+  { pecIndex: 16, code: 'ET-060', name: 'Jet Black', hex: '#111827', madeiraCode: '1000' },
+  { pecIndex: 19, code: 'ET-019B', name: 'Alpine Slate Blue', hex: '#3a506b', madeiraCode: '1042' },
+  { pecIndex: 21, code: 'ET-021B', name: 'Electric Ocean Blue', hex: '#1d5b79', madeiraCode: '1075' },
+  { pecIndex: 25, code: 'ET-025B', name: 'Coral Carmine', hex: '#ef6262', madeiraCode: '1108' },
+  { pecIndex: 26, code: 'ET-026', name: 'Light Amber Brown', hex: '#a86424', madeiraCode: '1145' },
+  { pecIndex: 29, code: 'ET-029W', name: 'Warm Linen White', hex: '#f5ebe1', madeiraCode: '1002' },
+  { pecIndex: 33, code: 'ET-033G', name: 'Sunburst Gold', hex: '#f4b942', madeiraCode: '1023' },
+  { pecIndex: 36, code: 'ET-036', name: 'Tudor Crimson Red', hex: '#c93b2b', madeiraCode: '1147' },
+  { pecIndex: 38, code: 'ET-038', name: 'Collegiate Ultramarine', hex: '#1b365d', madeiraCode: '1043' },
+  { pecIndex: 42, code: 'ET-042', name: 'Parchment Cream', hex: '#f3e8d8', madeiraCode: '1082' },
+  { pecIndex: 47, code: 'ET-047', name: 'Soft Muzzle Beige', hex: '#f6dec2', madeiraCode: '1084' },
+  { pecIndex: 48, code: 'ET-048', name: 'Strawberry Scarlet', hex: '#d9383a', madeiraCode: '1146' },
+  { pecIndex: 49, code: 'ET-049', name: 'Terracotta Vermilion', hex: '#d95f43', madeiraCode: '1078' },
+  { pecIndex: 50, code: 'ET-050', name: 'Deep Satin Black', hex: '#1c1917', madeiraCode: '1000' },
+  { pecIndex: 52, code: 'ET-052G', name: 'Crown Harvest Gold', hex: '#e8a33c', madeiraCode: '1025' },
+  { pecIndex: 54, code: 'ET-054', name: 'Botanical Emerald', hex: '#1e6f5c', madeiraCode: '1251' },
+  { pecIndex: 56, code: 'ET-056M', name: 'Cottage Moss Green', hex: '#2d7d46', madeiraCode: '1369' }
 ];
+
+const DST_PRESET_PALETTES = {
+  'varsity-crest-mo': [
+    { code: 'ET-038', name: 'Collegiate Ultramarine', hex: '#1b365d', madeiraCode: '1043' },
+    { code: 'ET-052G', name: 'Varsity Gold Satin', hex: '#d99b26', madeiraCode: '1025' },
+    { code: 'ET-036', name: 'Crimson Laurel & Shield', hex: '#c93b2b', madeiraCode: '1147' }
+  ],
+  'yosemite-sunset-': [
+    { code: 'ET-052G', name: 'Sunburst Sky Gold', hex: '#e8a33c', madeiraCode: '1025' },
+    { code: 'ET-049', name: 'Terracotta Sun', hex: '#d95f43', madeiraCode: '1078' },
+    { code: 'ET-019B', name: 'Granite Peaks Blue', hex: '#3a506b', madeiraCode: '1042' },
+    { code: 'ET-054', name: 'Alpine Pine Emerald', hex: '#1e6f5c', madeiraCode: '1251' },
+    { code: 'ET-029W', name: 'River Trail White', hex: '#f7f4ee', madeiraCode: '1002' },
+    { code: 'ET-050', name: 'Merrow Satin Rim', hex: '#1c1917', madeiraCode: '1000' }
+  ],
+  'tudor-rose-crest': [
+    { code: 'ET-029W', name: 'Warm Linen White', hex: '#f5ebe1', madeiraCode: '1002' },
+    { code: 'ET-054', name: 'Botanical Emerald', hex: '#1e6f5c', madeiraCode: '1251' },
+    { code: 'ET-036', name: 'Tudor Crimson Red', hex: '#c93b2b', madeiraCode: '1147' },
+    { code: 'ET-052G', name: 'Crown Harvest Gold', hex: '#e8a33c', madeiraCode: '1025' },
+    { code: 'ET-050', name: 'Deep Satin Black', hex: '#1c1917', madeiraCode: '1000' },
+    { code: 'ET-054', name: 'Botanical Emerald', hex: '#1e6f5c', madeiraCode: '1251' }
+  ]
+};
 
 export const HOOP_PRESETS = [
   {
@@ -85,21 +125,27 @@ function writeAscii(bytes, offset, str) {
 }
 
 export function renderWireframeSvg(playerTrack) {
-  const rawVb = Array.isArray(playerTrack?.viewBox) ? playerTrack.viewBox : [-50, -50, 100, 100];
+  const rawVb = Array.isArray(playerTrack?.viewBox) ? playerTrack.viewBox : [-53, -53, 106, 106];
   const [vbX, vbY, vbW, vbH] = rawVb.map((n, i) =>
-    Number.isFinite(Number(n)) ? Number(n) : i < 2 ? -50 : 100
+    Number.isFinite(Number(n)) ? Number(n) : i < 2 ? -53 : 106
   );
+  const hoopX = Number((vbX + (vbW - 100) / 2).toFixed(1));
+  const hoopY = Number((vbY + (vbH - 100) / 2).toFixed(1));
   const polylines = (playerTrack?.runs || [])
     .filter((r) => r.points && r.points.length > 0)
     .map((r) => {
-      const stroke = /^#[0-9a-fA-F]{3,8}$/.test(String(r.color || '')) ? r.color : '#0e2f76';
+      const stroke = /^#[0-9a-fA-F]{3,8}$/.test(String(r.color || '')) ? r.color : '#1b365d';
       const pts = r.points
         .map(([x, y]) => `${Number(x).toFixed(2)},${Number(y).toFixed(2)}`)
         .join(' ');
-      return `  <polyline fill="none" stroke="${stroke}" stroke-width="0.55" stroke-linecap="round" stroke-linejoin="round" points="${pts}" />`;
+      return `  <polyline fill="none" stroke="${stroke}" stroke-width="0.34" stroke-linecap="round" stroke-linejoin="round" points="${pts}" />`;
     })
     .join('\n');
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vbX} ${vbY} ${vbW} ${vbH}">\n${polylines}\n</svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vbX} ${vbY} ${vbW} ${vbH}">
+  <rect x="${vbX}" y="${vbY}" width="${vbW}" height="${vbH}" fill="#ede8df" />
+  <rect x="${hoopX}" y="${hoopY}" width="100" height="100" rx="4" fill="none" stroke="#9a9488" stroke-width="0.3" stroke-dasharray="2 1" />
+${polylines}
+</svg>`;
 }
 
 export function evaluateHoopFit(widthMm, heightMm) {
@@ -252,18 +298,21 @@ export function parsePesBinary(inputBytes) {
     throw inspectorError('Corrupted or empty Brother .PES binary: zero decodable stitches.');
   }
 
-  const pad = 4;
   const spanW = Number(Math.max(1, maxX - minX).toFixed(1));
   const spanH = Number(Math.max(1, maxY - minY).toFixed(1));
-  const widthMm = widthUnits > 0 && widthUnits <= 5000 ? Number((widthUnits / 10).toFixed(1)) : spanW;
-  const heightMm = heightUnits > 0 && heightUnits <= 5000 ? Number((heightUnits / 10).toFixed(1)) : spanH;
+  const useHeaderSize = widthUnits > 0 && widthUnits <= 5000 && heightUnits > 0 && heightUnits <= 5000 && spanW < 5;
+  const widthMm = useHeaderSize ? Number((widthUnits / 10).toFixed(1)) : spanW;
+  const heightMm = useHeaderSize ? Number((heightUnits / 10).toFixed(1)) : spanH;
 
+  const boxSize = Math.max(106, Number(Math.max(spanW, spanH) + 16).toFixed(1));
+  const cx = Number(((minX + maxX) / 2).toFixed(1));
+  const cy = Number(((minY + maxY) / 2).toFixed(1));
   const playerTrack = {
     viewBox: [
-      Number((minX - pad).toFixed(1)),
-      Number((minY - pad).toFixed(1)),
-      Number(Math.max(10, maxX - minX + pad * 2).toFixed(1)),
-      Number(Math.max(10, maxY - minY + pad * 2).toFixed(1))
+      Number((cx - boxSize / 2).toFixed(1)),
+      Number((cy - boxSize / 2).toFixed(1)),
+      boxSize,
+      boxSize
     ],
     runs
   };
@@ -337,6 +386,14 @@ export function parseDstBinary(inputBytes) {
     .replace(/^LA:/, '')
     .trim();
 
+  const activePalette = DST_PRESET_PALETTES[labelLine] || [
+    { code: 'ET-038', name: 'Collegiate Ultramarine', hex: '#1b365d', madeiraCode: '1043' },
+    { code: 'ET-052G', name: 'Crown Harvest Gold', hex: '#d99b26', madeiraCode: '1025' },
+    { code: 'ET-036', name: 'Tudor Crimson Red', hex: '#c93b2b', madeiraCode: '1147' },
+    { code: 'ET-054', name: 'Botanical Emerald', hex: '#1e6f5c', madeiraCode: '1251' },
+    { code: 'ET-050', name: 'Deep Satin Black', hex: '#1c1917', madeiraCode: '1000' }
+  ];
+
   const bodyLen = bytes.length - 512;
   const tripletCount = Math.floor(bodyLen / 3);
   const lastIdx = 512 + (tripletCount - 1) * 3;
@@ -355,7 +412,7 @@ export function parseDstBinary(inputBytes) {
   let colorIdx = 0;
 
   const runs = [];
-  let currentRun = { color: BROTHER_PEC_PALETTE[0].hex, points: [] };
+  let currentRun = { color: activePalette[0].hex, points: [] };
   const stopStitchCounts = [0];
 
   for (let i = 0; i < tripletCount; i++) {
@@ -371,7 +428,7 @@ export function parseDstBinary(inputBytes) {
       if (currentRun.points.length > 0) runs.push(currentRun);
       colorIdx++;
       stopStitchCounts[colorIdx] = 0;
-      const pal = BROTHER_PEC_PALETTE[colorIdx % BROTHER_PEC_PALETTE.length];
+      const pal = activePalette[colorIdx % activePalette.length];
       currentRun = { color: pal.hex, points: [] };
       continue;
     }
@@ -386,7 +443,7 @@ export function parseDstBinary(inputBytes) {
       jumpCount++;
       if (currentRun.points.length > 0) {
         runs.push(currentRun);
-        const pal = BROTHER_PEC_PALETTE[colorIdx % BROTHER_PEC_PALETTE.length];
+        const pal = activePalette[colorIdx % activePalette.length];
         currentRun = { color: pal.hex, points: [] };
       }
     }
@@ -407,15 +464,17 @@ export function parseDstBinary(inputBytes) {
     throw inspectorError('Corrupted or empty Tajima .DST file: zero decodable stitches.');
   }
 
-  const pad = 4;
   const widthMm = Number(Math.max(1, maxX - minX).toFixed(1));
   const heightMm = Number(Math.max(1, maxY - minY).toFixed(1));
+  const boxSize = Math.max(106, Number(Math.max(widthMm, heightMm) + 16).toFixed(1));
+  const cx = Number(((minX + maxX) / 2).toFixed(1));
+  const cy = Number(((minY + maxY) / 2).toFixed(1));
   const playerTrack = {
     viewBox: [
-      Number((minX - pad).toFixed(1)),
-      Number((minY - pad).toFixed(1)),
-      Number((widthMm + pad * 2).toFixed(1)),
-      Number((heightMm + pad * 2).toFixed(1))
+      Number((cx - boxSize / 2).toFixed(1)),
+      Number((cy - boxSize / 2).toFixed(1)),
+      boxSize,
+      boxSize
     ],
     runs
   };
@@ -423,7 +482,7 @@ export function parseDstBinary(inputBytes) {
   const colorCount = colorChanges + 1;
   const colorStops = [];
   for (let i = 0; i < colorCount; i++) {
-    const pal = BROTHER_PEC_PALETTE[i % BROTHER_PEC_PALETTE.length];
+    const pal = activePalette[i % activePalette.length];
     colorStops.push({
       stopNumber: i + 1,
       hex: pal.hex,
@@ -452,169 +511,137 @@ export function parseDstBinary(inputBytes) {
 }
 
 export function inspectEmbroideryBytes(inputBytes, fileName = 'design.pes') {
-  const bytes = toUint8Array(inputBytes);
   const cleanName = String(fileName || 'design.pes').trim();
-  const extMatch = cleanName.toLowerCase().match(/\.([a-z0-9]+)$/);
-  const ext = extMatch ? extMatch[1] : '';
+  const extMatch = cleanName.match(/\.([a-z0-9]+)$/i);
+  const ext = extMatch ? extMatch[1].toLowerCase() : '';
 
-  const isPng = bytes.length >= 4 && bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47;
-  const isJpg = bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
-  const headText = readAscii(bytes, 0, Math.min(256, bytes.length)).trimStart();
-  const isSvg = /^<\?xml|^<!DOCTYPE\s+svg|^<svg[\s>]/i.test(headText);
-
-  if (['png', 'jpg', 'jpeg', 'webp', 'svg'].includes(ext) || isPng || isJpg || isSvg) {
+  if (['png', 'jpg', 'jpeg', 'webp', 'svg', 'gif', 'bmp'].includes(ext)) {
     throw inspectorError(
-      'pes-dst-inspector is a read-only binary verifier for existing .PES and .DST stitch files. To auto-trace and convert PNG, JPG, or SVG artwork into Brother .PES and Tajima .DST embroidery files, use the online digitizing studio at https://imagetopes.com',
+      `Raster/vector image detected (${cleanName}). Open-source pes-dst-inspector only inspects compiled .PES and .DST stitch binaries. Convert PNG, JPG, or SVG artwork into Brother .PES and Tajima .DST online at https://imagetopes.com`,
       'IMAGE_CONVERSION_REQUIRED'
     );
   }
 
+  const bytes = toUint8Array(inputBytes);
   const isPesMagic = bytes.length >= 8 && readAscii(bytes, 0, 8) === '#PES0001';
-  const isDstMagic = bytes.length >= 515 && readAscii(bytes, 0, 3) === 'LA:';
 
   const parsed =
     ext === 'pes' || isPesMagic
       ? parsePesBinary(bytes)
-      : ext === 'dst' || isDstMagic
+      : ext === 'dst' || (bytes.length >= 515 && readAscii(bytes, 0, 3) === 'LA:')
         ? parseDstBinary(bytes)
-        : (() => {
-            throw inspectorError(
-              'Unrecognized binary header. Provide a valid Brother #PES0001 (.pes) or Tajima 512-byte (.dst) embroidery file.'
-            );
-          })();
+        : null;
+
+  if (!parsed) {
+    throw inspectorError(
+      `Unsupported or unrecognized file "${cleanName}". Expected a Brother #PES0001 (.pes) or Tajima 512-byte (.dst) embroidery file.`
+    );
+  }
 
   const hoopFit = evaluateHoopFit(parsed.sizeMm.width, parsed.sizeMm.height);
   const svgWireframe = renderWireframeSvg(parsed.playerTrack);
+  const estimatedMinutes = Math.max(1, Math.round(parsed.stitchCount / 650));
 
   return {
     ...parsed,
     fileName: cleanName,
     hoopFit,
-    svgWireframe
+    estimatedMinutes,
+    svgWireframe,
+    conversionStudioUrl: 'https://imagetopes.com'
   };
 }
 
 /**
- * Generates a deterministic, spec-compliant Brother #PES0001 binary buffer in memory
- * (a 2-color 64x64mm geometric crest) for CLI tests and 1-click browser demo inspection.
+ * Generates a deterministic in-memory Brother #PES0001 sample binary for unit tests & CLI demos.
  */
 export function createSamplePesBytes() {
   const pecOffset = 48;
   const stitchStart = pecOffset + 552;
+  const deltas = [
+    [0, -20], [18, 8], [14, 18], [-10, 20], [-22, 6],
+    [-22, -6], [-10, -20], [14, -18], [18, -8],
+    [0xfe, 0xb0, 1],
+    [-12, -12], [24, 0], [0, 24], [-24, 0], [0, -24],
+    [0xfe, 0xb0, 2],
+    [-6, -6], [12, 0], [0, 12], [-12, 0], [0, -12]
+  ];
+
   const stitchBytes = [];
-
-  // Ring 1 (Color 1: Crimson Red ET-019) - octagon stitches
-  const deltas1 = [
-    [35, 0], [25, 25], [0, 35], [-25, 25], [-35, 0], [-25, -25], [0, -35], [25, -25],
-    [35, 0], [25, 25], [0, 35], [-25, 25], [-35, 0], [-25, -25], [0, -35], [25, -25]
-  ];
-  for (const [dx, dy] of deltas1) {
-    stitchBytes.push(dx >= 0 ? dx & 0x3f : (dx + 0x80) & 0x7f);
-    stitchBytes.push(dy >= 0 ? dy & 0x3f : (dy + 0x80) & 0x7f);
+  for (const item of deltas) {
+    if (item.length === 3 && item[0] === 0xfe) {
+      stitchBytes.push(0xfe, 0xb0, item[2]);
+    } else {
+      const [dx, dy] = item;
+      stitchBytes.push(dx >= 0 ? dx & 0x3f : (dx + 0x80) & 0x7f);
+      stitchBytes.push(dy >= 0 ? dy & 0x3f : (dy + 0x80) & 0x7f);
+    }
   }
-
-  // PEC color change marker (0xFE 0xB0 0x02)
-  stitchBytes.push(0xfe, 0xb0, 0x02);
-
-  // Ring 2 (Color 2: Prussian Blue ET-001) - inner star stitches
-  const deltas2 = [
-    [20, 10], [10, 20], [-20, 10], [-10, 20], [-20, -10], [-10, -20], [20, -10], [10, -20],
-    [15, 15], [-15, 15], [-15, -15], [15, -15]
-  ];
-  for (const [dx, dy] of deltas2) {
-    stitchBytes.push(dx >= 0 ? dx & 0x3f : (dx + 0x80) & 0x7f);
-    stitchBytes.push(dy >= 0 ? dy & 0x3f : (dy + 0x80) & 0x7f);
-  }
-
-  // End marker
   stitchBytes.push(0xff);
 
   const totalLen = stitchStart + stitchBytes.length;
-  const bytes = new Uint8Array(totalLen);
-  const dv = new DataView(bytes.buffer);
+  const buf = new Uint8Array(totalLen);
+  const dv = new DataView(buf.buffer);
 
-  writeAscii(bytes, 0, '#PES0001');
+  writeAscii(buf, 0, '#PES0001');
   dv.setUint32(8, pecOffset, true);
-  writeAscii(bytes, pecOffset, 'LA:ROYAL-CREST     ');
-  bytes[pecOffset + 48] = 1; // 2 colors (count - 1)
-  bytes[pecOffset + 49] = 5; // ET-019 Crimson Red
-  bytes[pecOffset + 50] = 1; // ET-001 Prussian Blue
+  writeAscii(buf, pecOffset, 'LA:ROYAL-CREST     ');
+  buf[pecOffset + 48] = 2; // 3 colors (colorCount - 1)
+  buf[pecOffset + 49] = 36; // Tudor Crimson Red
+  buf[pecOffset + 50] = 52; // Crown Harvest Gold
+  buf[pecOffset + 51] = 54; // Botanical Emerald
 
   const graphicHeaderOffset = pecOffset + 532;
-  dv.setUint16(graphicHeaderOffset + 8, 640, true);  // 64.0 mm
+  dv.setUint16(graphicHeaderOffset + 8, 640, true); // 64.0 mm
   dv.setUint16(graphicHeaderOffset + 10, 640, true); // 64.0 mm
 
   for (let i = 0; i < stitchBytes.length; i++) {
-    bytes[stitchStart + i] = stitchBytes[i];
+    buf[stitchStart + i] = stitchBytes[i];
   }
-  return bytes;
-}
-
-function encodeDstNormalTriplet(dx, dy) {
-  // Simple balanced-ternary encoder for small sample steps (-13..+13)
-  let rx = dx;
-  let ry = dy;
-  let b0 = 0;
-  let b1 = 0;
-  let b2 = 0x03;
-
-  const stepWeights = [
-    [9, (pos) => { b0 |= pos ? 0x04 : 0x08; }, (pos) => { b0 |= pos ? 0x20 : 0x10; }],
-    [3, (pos) => { b1 |= pos ? 0x01 : 0x02; }, (pos) => { b1 |= pos ? 0x80 : 0x40; }],
-    [1, (pos) => { b0 |= pos ? 0x01 : 0x02; }, (pos) => { b0 |= pos ? 0x80 : 0x40; }]
-  ];
-
-  for (const [w, setX, setY] of stepWeights) {
-    if (rx >= w - Math.floor(w / 2)) {
-      setX(true);
-      rx -= w;
-    } else if (rx <= -(w - Math.floor(w / 2))) {
-      setX(false);
-      rx += w;
-    }
-    if (ry >= w - Math.floor(w / 2)) {
-      setY(true);
-      ry -= w;
-    } else if (ry <= -(w - Math.floor(w / 2))) {
-      setY(false);
-      ry += w;
-    }
-  }
-  return [b0, b1, b2];
+  return buf;
 }
 
 /**
- * Generates a deterministic, spec-compliant Tajima 512-byte .DST binary buffer in memory.
+ * Generates a deterministic in-memory Tajima .DST (512-byte header + triplets) sample binary.
  */
 export function createSampleDstBytes() {
-  const triplets = [];
-  const steps1 = [
-    [12, 0], [12, 6], [6, 12], [0, 12], [-6, 12], [-12, 6], [-12, 0], [-12, -6],
-    [-6, -12], [0, -12], [6, -12], [12, -6], [10, 5], [10, -5], [-10, -5], [-10, 5]
+  const steps = [
+    [20, 0, 0x03], [15, 15, 0x03], [0, 20, 0x03], [-15, 15, 0x03],
+    [-20, 0, 0x03], [-15, -15, 0x03], [0, -20, 0x03], [15, -15, 0x03],
+    [0, 0, 0xc3], // color change
+    [10, 10, 0x03], [-20, 0, 0x03], [0, -20, 0x03], [20, 0, 0x03]
   ];
-  for (const [dx, dy] of steps1) {
-    triplets.push(...encodeDstNormalTriplet(dx, dy));
-  }
-  // Color change triplet (0x00, 0x00, 0xC3)
-  triplets.push(0x00, 0x00, 0xc3);
 
-  const steps2 = [
-    [9, 9], [9, -9], [-9, -9], [-9, 9], [12, 0], [-12, 0], [0, 12], [0, -12]
-  ];
-  for (const [dx, dy] of steps2) {
-    triplets.push(...encodeDstNormalTriplet(dx, dy));
-  }
-  // EOF triplet (0x00, 0x00, 0xF3)
-  triplets.push(0x00, 0x00, 0xf3);
+  const buf = new Uint8Array(512 + (steps.length + 1) * 3);
+  buf.fill(0x20, 0, 512);
+  const headerStr = 'LA:VARSITY-CAP     \rST:      13\rCO:  1\r+X:  180\r-X:  180\r+Y:  180\r-Y:  180\r';
+  writeAscii(buf, 0, headerStr);
+  buf[511] = 0x1a;
 
-  const bytes = new Uint8Array(512 + triplets.length);
-  bytes.fill(0x20, 0, 512);
-  const headerStr = 'LA:TAJIMA-CAP-LOGO \rST:     25\rCO:  1\r+X:   350\r-X:   350\r+Y:   240\r-Y:   240\rAX:+    0\rAY:+    0\r';
-  writeAscii(bytes, 0, headerStr);
-  bytes[511] = 0x1a;
-
-  for (let i = 0; i < triplets.length; i++) {
-    bytes[512 + i] = triplets[i];
+  function encodeTriplet(dx, dy, flag) {
+    let b0 = 0;
+    let b1 = 0;
+    let b2 = flag & 0xf3;
+    if (dx > 0) b0 |= 0x01;
+    if (dx < 0) b0 |= 0x02;
+    if (Math.abs(dx) >= 9) b0 |= dx > 0 ? 0x04 : 0x08;
+    if (Math.abs(dx) >= 20) b1 |= dx > 0 ? 0x04 : 0x08;
+    if (dy > 0) b0 |= 0x80;
+    if (dy < 0) b0 |= 0x40;
+    if (Math.abs(dy) >= 9) b0 |= dy > 0 ? 0x20 : 0x10;
+    if (Math.abs(dy) >= 20) b1 |= dy > 0 ? 0x20 : 0x10;
+    return [b0, b1, b2];
   }
-  return bytes;
+
+  let offset = 512;
+  for (const [dx, dy, flag] of steps) {
+    const [b0, b1, b2] = flag === 0xc3 ? [0x00, 0x00, 0xc3] : encodeTriplet(dx, dy, flag);
+    buf[offset++] = b0;
+    buf[offset++] = b1;
+    buf[offset++] = b2;
+  }
+  buf[offset++] = 0x00;
+  buf[offset++] = 0x00;
+  buf[offset++] = 0xf3;
+  return buf;
 }
