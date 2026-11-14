@@ -1,7 +1,7 @@
 {
   "name": "pes-dst-inspector",
   "version": "1.0.0",
-  "description": "Zero-dependency Brother #PES0001 (.PES) and Tajima (.DST) binary stitch header inspector, hoop verifier, and wireframe previewer.",
+  "description": "Zero-dependency Brother #PES0001 (.PES) and Tajima (.DST) binary stitch header inspector, hoop verifier, and wireframe previewer — companion utility for ImageToPES.com",
   "type": "module",
   "main": "./src/inspector.mjs",
   "exports": {
@@ -10,6 +10,12 @@
   "bin": {
     "pes-dst-inspector": "./bin/cli.mjs"
   },
+  "files": [
+    "src",
+    "bin",
+    "README.md",
+    "DESIGN.md"
+  ],
   "scripts": {
     "test": "node --test test/*.test.mjs"
   },
@@ -21,8 +27,14 @@
     "tajima",
     "machine-embroidery",
     "pes0001",
-    "stitch-viewer"
+    "stitch-viewer",
+    "image-to-pes",
+    "png-to-pes",
+    "svg-to-pes"
   ],
-  "homepage": "https://imagetopes.com/pes-file-viewer",
-  "license": "MIT"
+  "homepage": "https://imagetopes.com",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
 }

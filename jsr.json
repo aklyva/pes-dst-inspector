@@ -1,0 +1,5 @@
+{
+  "name": "@imagetopes/pes-dst-inspector",
+  "version": "1.0.0",
+  "exports": "./src/inspector.mjs"
+}
