@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Primary Theme: awesome-design-md/meta (Google Stitch DESIGN.md) | Micro-Adaptation: astryx/shape-relationships + control-rhythm + system-states -->
+  <title>PES &amp; DST Binary File Inspector — Brother #PES0001 &amp; Tajima Stitch Verifier</title>
+  <meta name="description" content="Open-source browser utility and CLI to inspect Brother #PES0001 (.PES) and Tajima (.DST) embroidery binary headers, hoop compatibility (4x4 SA443 / 5x7 SA444), thread stops, and 2D stitch wireframes. Convert PNG/JPG/SVG to PES online at ImageToPES.com." />
+  <link rel="canonical" href="https://imagetopes.com/pes-file-viewer" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='16' fill='%230a1317'/><text x='16' y='21' font-family='sans-serif' font-size='12' font-weight='700' fill='%23ffffff' text-anchor='middle'>PES</text></svg>" />
+  <style>
+    :root {
+      /* Google Stitch awesome-design-md/meta Color Tokens */
+      --canvas: #ffffff;
+      --surface-soft: #f1f4f7;
+      --ink-deep: #0a1317;
+      --ink: #1c1e21;
+      --charcoal: #444950;
+      --slate: #4b4c4f;
+      --steel: #5d6c7b;
+      --stone: #8595a4;
+      --hairline: #ced0d4;
+      --hairline-soft: #dee3e9;
+      --ink-button: #000000;
+      --on-ink-button: #ffffff;
+      --primary: #0064e0;
+      --primary-deep: #0457cb;
+      --primary-soft: rgba(0, 145, 255, 0.12);
+      --fb-blue: #1876f2;
+      --success: #31a24c;
+      --attention: #f2a918;
+      --warning: #f7b928;
+      --critical: #e41e3f;
+
+      /* Shape Scale (awesome-design-md/meta + astryx/shape-relationships concentric radii) */
+      --rounded-sm: 4px;
+      --rounded-md: 6px;
+      --rounded-lg: 8px;
+      --rounded-xl: 16px;
+      --rounded-xxl: 24px;
+      --rounded-xxxl: 32px;
+      --rounded-feature: 40px;
+      --rounded-full: 100px;
+      --rounded-circle: 9999px;
+
+      /* Spacing Scale (4px base, 8px primary step) */
+      --space-xxs: 4px;
+      --space-xs: 8px;
+      --space-sm: 10px;
+      --space-md: 12px;
+      --space-base: 16px;
+      --space-lg: 20px;
+      --space-xl: 24px;
+      --space-xxl: 32px;
+      --space-xxxl: 40px;
+      --space-section: 64px;
+
+      /* Typography (Optimistic VF + geometric humanist stack) */
+      --font-sans: "Optimistic VF", "Optimistic Display", "Optimistic Text", Montserrat, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--canvas);
+      color: var(--ink);
+      font-size: 16px;
+      line-height: 1.5;
+      letter-spacing: -0.16px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* 1. Top Promo Banner (promo-banner component) */
+    .promo-banner {
+      background: var(--ink-deep);
+      color: var(--canvas);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.43;
+      letter-spacing: -0.14px;
+      padding: var(--space-md) var(--space-xl);
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-md);
+      flex-wrap: wrap;
+    }
+    .promo-chip {
+      background: var(--warning);
+      color: var(--ink-deep);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.33;
+      padding: 4px 10px;
+      border-radius: var(--rounded-full);
+    }
+    .promo-banner a {
+      color: var(--canvas);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    /* 2. Sticky Top Navigation (64px height, pill-tab center nav, search/CTA right) */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--hairline-soft);
+      min-height: 64px;
+      padding: 0 var(--space-xxl);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-base);
+      flex-wrap: wrap;
+    }
+    .brand-lockup {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+      text-decoration: none;
+      color: var(--ink-deep);
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: -0.2px;
+    }
+    .brand-icon-circle {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--rounded-circle);
+      background: var(--ink-deep);
+      color: var(--canvas);
+      display: inline-grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    /* Astryx control-rhythm: pill tabs & buttons share 40-44px rhythm */
+    .pill-tab-group {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      flex-wrap: wrap;
+    }
+    .button-pill-tab {
+      background: var(--canvas);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.43;
+      letter-spacing: -0.14px;
+      border-radius: var(--rounded-full);
+      padding: 8px 16px;
+      min-height: 38px;
+      border: 1px solid var(--hairline);
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
+    }
+    .button-pill-tab.active {
+      background: var(--ink-deep);
+      color: var(--canvas);
+      border-color: var(--ink-deep);
+      box-shadow: rgba(0, 0, 0, 0.2) 1px 1px 0px 0px;
+    }
+
+    /* Buttons (button-primary, button-buy-cta, button-secondary, button-ghost) */
+    .button-primary {
+      background: var(--ink-button);
+      color: var(--on-ink-button);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.43;
+      letter-spacing: -0.14px;
+      border-radius: var(--rounded-full);
+      padding: 12px 26px;
+      min-height: 44px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 160ms ease;
+    }
+    .button-primary:active {
+      background: var(--charcoal);
+    }
+
+    .button-buy-cta {
+      background: var(--primary);
+      color: #ffffff;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.43;
+      letter-spacing: -0.14px;
+      border-radius: var(--rounded-full);
+      padding: 14px 30px;
+      min-height: 46px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      transition: background 160ms ease;
+    }
+    .button-buy-cta:active, .button-buy-cta:hover {
+      background: var(--primary-deep);
+    }
+
+    .button-secondary {
+      background: transparent;
+      color: var(--ink-deep);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.43;
+      letter-spacing: -0.14px;
+      border-radius: var(--rounded-full);
+      padding: 10px 24px;
+      min-height: 44px;
+      border: 2px solid var(--ink-deep);
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .button-ghost {
+      background: transparent;
+      color: var(--ink-deep);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.43;
+      letter-spacing: -0.14px;
+      border-radius: var(--rounded-full);
+      padding: 9px 20px;
+      min-height: 40px;
+      border: 2px solid rgba(10, 19, 23, 0.12);
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    /* Container & Breadcrumb */
+    .page-wrap {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: var(--space-xl) var(--space-xxl) var(--space-section);
+    }
+    @media (max-width: 768px) {
+      .top-nav { padding: 10px var(--space-base); }
+      .page-wrap { padding: var(--space-base) var(--space-base) var(--space-section); }
+    }
+
+    .breadcrumb {
+      font-size: 14px;
+      color: var(--steel);
+      margin-bottom: var(--space-lg);
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      flex-wrap: wrap;
+    }
+    .breadcrumb a {
+      color: var(--steel);
+      text-decoration: none;
+    }
+    .breadcrumb .leaf {
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    /* 3. Hero Header (Three-tier typography: 500 Display + 300 Editorial Subhead + 400 Body) */
+    .hero-header {
+      margin-bottom: var(--space-xxl);
+      max-width: 880px;
+    }
+    .display-title {
+      font-size: 46px;
+      font-weight: 500;
+      line-height: 1.17;
+      color: var(--ink-deep);
+      font-feature-settings: "ss01" on, "ss02" on;
+      margin-bottom: var(--space-xs);
+    }
+    .editorial-subhead {
+      font-size: 26px;
+      font-weight: 300;
+      line-height: 1.24;
+      color: var(--charcoal);
+      font-feature-settings: "ss01" on, "ss02" on;
+      margin-bottom: var(--space-md);
+    }
+    .hero-lead {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--slate);
+    }
+    @media (max-width: 768px) {
+      .display-title { font-size: 32px; }
+      .editorial-subhead { font-size: 20px; }
+    }
+
+    /* 4. PDP 2-Column Split (58% Gallery / 42% Sticky Right Rail) */
+    .pdp-split {
+      display: grid;
+      grid-template-columns: minmax(0, 1.38fr) minmax(320px, 0.95fr);
+      gap: var(--space-xxl);
+      align-items: start;
+      margin-bottom: var(--space-section);
+    }
+    @media (max-width: 1024px) {
+      .pdp-split { grid-template-columns: 1fr; }
+    }
+
+    /* Left Gallery Card: concentric 32px outer -> 16px padding -> 16px inner stage (astryx/shape-relationships) */
+    .card-gallery-outer {
+      background: var(--surface-soft);
+      border-radius: var(--rounded-xxxl);
+      padding: var(--space-xl);
+      border: 1px solid var(--hairline-soft);
+    }
+    .gallery-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+      margin-bottom: var(--space-base);
+      flex-wrap: wrap;
+    }
+    .wireframe-viewport {
+      background: var(--canvas);
+      border-radius: var(--rounded-xl);
+      border: 1px solid var(--hairline-soft);
+      min-height: 360px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-xl);
+      position: relative;
+    }
+    .wireframe-viewport svg {
+      width: 100%;
+      max-width: 360px;
+      height: 300px;
+    }
+
+    /* Swatch & Dropzone Row inside Gallery */
+    .swatch-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-base);
+      margin-top: var(--space-base);
+      padding: var(--space-md) var(--space-base);
+      background: var(--canvas);
+      border-radius: var(--rounded-xl);
+      border: 1px solid var(--hairline-soft);
+      flex-wrap: wrap;
+    }
+    .swatch-circles {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      flex-wrap: wrap;
+    }
+    .color-swatch-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--rounded-circle);
+      border: 2px solid var(--canvas);
+      box-shadow: 0 0 0 1px var(--hairline);
+      display: inline-block;
+    }
+
+    .dropzone-card {
+      margin-top: var(--space-base);
+      background: var(--canvas);
+      border-radius: var(--rounded-xl);
+      border: 2px dashed var(--hairline);
+      padding: var(--space-xl);
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 160ms ease, background 160ms ease;
+    }
+    .dropzone-card.dragover, .dropzone-card:focus-visible {
+      border-color: var(--fb-blue);
+      background: var(--primary-soft);
+      outline: none;
+    }
+
+    /* System States (astryx/system-states): Semantic Badges + In-Flow Gate Alert */
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.33;
+      padding: 5px 12px;
+      border-radius: var(--rounded-full);
+    }
+    .badge-success {
+      background: var(--success);
+      color: var(--canvas);
+    }
+    .badge-attention {
+      background: var(--attention);
+      color: var(--ink-deep);
+    }
+
+    .conversion-gate-alert {
+      display: none;
+      margin-top: var(--space-base);
+      background: var(--canvas);
+      border: 2px solid var(--primary);
+      border-radius: var(--rounded-xl);
+      padding: var(--space-xl);
+    }
+    .conversion-gate-alert.visible {
+      display: block;
+    }
+
+    /* Right Sticky Summary Rail (card-checkout-summary component) */
+    .card-checkout-summary {
+      position: sticky;
+      top: 84px;
+      background: var(--canvas);
+      border-radius: var(--rounded-xl);
+      padding: var(--space-xl);
+      border: 1px solid var(--hairline-soft);
+      box-shadow: rgba(20, 22, 26, 0.3) 0px 1px 4px 0px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+
+    /* Spec Table (tech-specs-table component) */
+    .tech-specs-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .tech-specs-table tr {
+      border-bottom: 1px solid var(--hairline-soft);
+    }
+    .tech-specs-table td {
+      padding: 10px 4px;
+    }
+    .tech-specs-table td:first-child {
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .tech-specs-table td:last-child {
+      text-align: right;
+      color: var(--charcoal);
+      font-family: var(--font-mono);
+      font-size: 13px;
+    }
+
+    /* Configurator Option Cards (radio-option & radio-option-selected) */
+    .radio-option-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+    .radio-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--canvas);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-base);
+      border: 1px solid rgba(10, 19, 23, 0.12);
+      text-decoration: none;
+      color: var(--ink);
+      transition: border-color 150ms ease;
+    }
+    .radio-option.selected, .radio-option:hover {
+      border: 2px solid #0143b5;
+    }
+
+    /* 5. Full-Width Dark Promo Strip (card-promo-strip component) */
+    .card-promo-strip {
+      background: var(--ink-deep);
+      color: var(--canvas);
+      border-radius: var(--rounded-xxxl);
+      padding: var(--space-xxl) var(--space-xxxl);
+      margin-bottom: var(--space-section);
+      display: grid;
+      grid-template-columns: 1.3fr 0.7fr;
+      gap: var(--space-xxl);
+      align-items: center;
+    }
+    @media (max-width: 860px) {
+      .card-promo-strip {
+        grid-template-columns: 1fr;
+        padding: var(--space-xl);
+      }
+    }
+    .cli-snippet {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: var(--rounded-xl);
+      padding: var(--space-base);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: #ffffff;
+      overflow-x: auto;
+    }
+
+    /* 6. Why-Buy / Workflow 3-Up Grid (why-buy-tile component) */
+    .section-heading {
+      font-size: 32px;
+      font-weight: 500;
+      line-height: 1.25;
+      color: var(--ink-deep);
+      font-feature-settings: "ss01" on, "ss02" on;
+      margin-bottom: var(--space-xs);
+    }
+    .why-buy-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-xl);
+      margin-top: var(--space-xl);
+      margin-bottom: var(--space-section);
+    }
+    @media (max-width: 980px) {
+      .why-buy-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .why-buy-grid { grid-template-columns: 1fr; }
+    }
+    .why-buy-tile {
+      background: var(--canvas);
+      border-radius: var(--rounded-xl);
+      padding: var(--space-xxl) var(--space-xl);
+      border: 1px solid var(--hairline-soft);
+      text-decoration: none;
+      color: var(--ink);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-base);
+    }
+    .why-buy-tile h3 {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.44;
+      color: var(--ink-deep);
+      margin-bottom: 6px;
+    }
+    .why-buy-tile p {
+      font-size: 14px;
+      line-height: 1.43;
+      color: var(--slate);
+    }
+
+    /* 7. FAQ Accordion (faq-accordion-item component) */
+    .faq-stack {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      margin-top: var(--space-xl);
+    }
+    details.faq-accordion-item {
+      background: var(--canvas);
+      border-radius: var(--rounded-xl);
+      padding: var(--space-xl);
+      border: 1px solid var(--hairline-soft);
+    }
+    details.faq-accordion-item summary {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.44;
+      color: var(--ink-deep);
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-base);
+    }
+    details.faq-accordion-item summary::-webkit-details-marker { display: none; }
+    details.faq-accordion-item p {
+      margin-top: var(--space-base);
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--charcoal);
+    }
+
+    /* 8. Footer (footer-region component) */
+    .footer-region {
+      background: var(--canvas);
+      border-top: 1px solid var(--hairline-soft);
+      padding: var(--space-xxl);
+      color: var(--steel);
+      font-size: 14px;
+    }
+    .footer-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-base);
+    }
+    .footer-links {
+      display: flex;
+      gap: var(--space-lg);
+      flex-wrap: wrap;
+    }
+    .footer-links a {
+      color: var(--steel);
+      text-decoration: none;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <!-- 1. Top Promotional Strip (promo-banner) -->
+  <div class="promo-banner">
+    <span class="promo-chip">Read-Only Inspector</span>
+    <span>Need to convert a PNG, JPG, or SVG logo into Brother .PES or Tajima .DST stitches?</span>
+    <a href="https://imagetopes.com/">Launch ImageToPES Online Studio →</a>
+  </div>
+
+  <!-- 2. Sticky Top Navigation -->
+  <header class="top-nav">
+    <a class="brand-lockup" href="https://imagetopes.com/pes-file-viewer">
+      <span class="brand-icon-circle">PES</span>
+      <span>pes-dst-inspector</span>
+    </a>
+
+    <nav class="pill-tab-group" aria-label="Sample Embroidery Binary Presets">
+      <button type="button" class="button-pill-tab active" id="btnSamplePes">
+        Brother #PES0001 Sample
+      </button>
+      <button type="button" class="button-pill-tab" id="btnSampleDst">
+        Tajima 512B .DST Sample
+      </button>
+    </nav>
+
+    <div style="display:flex;align-items:center;gap:10px;">
+      <a class="button-primary" href="https://imagetopes.com/">
+        Convert Image to .PES →
+      </a>
+    </div>
+  </header>
+
+  <main class="page-wrap">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="https://imagetopes.com/">ImageToPES</a>
+      <span>›</span>
+      <a href="https://imagetopes.com/pes-file-viewer">Embroidery Tools</a>
+      <span>›</span>
+      <span class="leaf">PES &amp; DST Binary Inspector</span>
+    </nav>
+
+    <!-- 3. Three-Tier Typographic Hero -->
+    <section class="hero-header">
+      <h1 class="display-title">Brother .PES &amp; Tajima .DST Binary Inspector</h1>
+      <p class="editorial-subhead">Zero-upload header verification, hoop bounds telemetry, and 2D stitch wireframes.</p>
+      <p class="hero-lead">
+        Inspect existing <code>#PES0001</code> and 512-byte Tajima <code>.DST</code> stitch files locally in your browser using pure <code>Uint8Array</code> decoding—or jump to <a href="https://imagetopes.com/" style="color:var(--primary);font-weight:700;">ImageToPES.com</a> to compile PNG, JPG, and SVG artwork into machine-ready embroidery files.
+      </p>
+    </section>
+
+    <!-- 4. 58% / 42% PDP Split Layout -->
+    <section class="pdp-split" aria-label="Interactive Binary Inspector">
+      <!-- Left 58% Gallery Column -->
+      <div class="card-gallery-outer">
+        <div class="gallery-top-bar">
+          <div>
+            <div style="font-size:12px;font-weight:700;color:var(--steel);text-transform:uppercase;letter-spacing:0.04em;">
+              2D Stitch Coordinate Wireframe (0.1mm Units)
+            </div>
+            <div style="font-size:20px;font-weight:500;color:var(--ink-deep);" id="fileTitle">
+              sample-royal-crest.pes (ROYAL-CREST)
+            </div>
+          </div>
+          <span class="badge-status badge-success" id="hoopStatusBadge">
+            ✓ Fits 4×4" Hoop (100×100mm)
+          </span>
+        </div>
+
+        <!-- Concentric Inner Viewport -->
+        <div class="wireframe-viewport" id="wireframeStage" role="img" aria-label="2D Embroidery Stitch Wireframe"></div>
+
+        <!-- Circular Thread Swatch Bar -->
+        <div class="swatch-strip">
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+            <span style="font-size:14px;font-weight:700;color:var(--ink-deep);">Detected Thread Stops:</span>
+            <div class="swatch-circles" id="swatchCircleList"></div>
+          </div>
+          <a class="button-ghost" href="https://imagetopes.com/pes-file-viewer">
+            Preview in 3D Thread Render →
+          </a>
+        </div>
+
+        <!-- Dropzone -->
+        <div class="dropzone-card" id="dropzone" role="button" tabindex="0" aria-label="Drop an existing .PES or .DST file to inspect">
+          <input type="file" id="fileInput" accept=".pes,.dst,.png,.jpg,.jpeg,.webp,.svg" style="display:none" />
+          <div style="font-size:16px;font-weight:700;color:var(--ink-deep);margin-bottom:4px;">
+            Drop an existing <code>.PES</code> or <code>.DST</code> binary file here
+          </div>
+          <div style="font-size:14px;color:var(--steel);margin-bottom:14px;">
+            100% client-side inspection · Curious what happens with a PNG, JPG, or SVG logo? Drop one to see conversion options.
+          </div>
+          <span class="button-secondary">Browse Local .PES / .DST File</span>
+        </div>
+
+        <!-- In-Flow Conversion Gate Banner (Triggers when user drops PNG/JPG/SVG) -->
+        <div class="conversion-gate-alert" id="convertGateBanner" role="region" aria-live="polite">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <span class="badge-status badge-attention">▲ Image Digitizing Required</span>
+            <strong style="font-size:16px;color:var(--ink-deep);" id="convertGateHeading">
+              Convert PNG, JPG, or SVG to .PES / .DST at ImageToPES.com
+            </strong>
+          </div>
+          <p style="font-size:14px;color:var(--charcoal);margin-bottom:16px;">
+            <code>pes-dst-inspector</code> is a read-only verifier for compiled stitch binaries. To auto-trace raster or vector graphics, generate underlay + satin/tatami stitches, and download 5-format machine bundles (<code>.PES</code>, <code>.DST</code>, <code>.JEF</code>, <code>.EXP</code>, <code>.VP3</code>), open the online digitizing studio:
+          </p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <a class="button-primary" href="https://imagetopes.com/">Open ImageToPES Studio →</a>
+            <a class="button-ghost" href="https://imagetopes.com/png-to-pes">PNG to PES</a>
+            <a class="button-ghost" href="https://imagetopes.com/svg-to-pes">SVG to PES</a>
+            <a class="button-ghost" href="https://imagetopes.com/image-to-dst">Image to DST (--hat)</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right 42% Sticky Checkout/Telemetry Summary Rail -->
+      <aside class="card-checkout-summary" aria-label="Binary Telemetry & Conversion Rail">
+        <div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;">
+            <span style="font-size:12px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:0.04em;">
+              Binary Header Telemetry
+            </span>
+            <code style="font-family:var(--font-mono);font-size:12px;font-weight:700;background:var(--surface-soft);padding:3px 10px;border-radius:var(--rounded-full);" id="formatBadge">
+              PES #PES0001
+            </code>
+          </div>
+          <h2 style="font-size:24px;font-weight:500;line-height:1.25;color:var(--ink-deep);">
+            Stitch &amp; Hoop Specification
+          </h2>
+        </div>
+
+        <table class="tech-specs-table" aria-label="Parsed Binary Metrics">
+          <tbody>
+            <tr>
+              <td>Physical Dimensions</td>
+              <td id="kpiDimensions">64 × 64 mm</td>
+            </tr>
+            <tr>
+              <td>Brother 4×4" Hoop (SA443)</td>
+              <td id="kpiHoopFit">Fits 100×100mm</td>
+            </tr>
+            <tr>
+              <td>Total Stitches / Trims</td>
+              <td id="kpiStitches">28 / 0 jumps</td>
+            </tr>
+            <tr>
+              <td>Header Signature</td>
+              <td id="kpiHeaderMeta">#PES0001 @ 48B</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--ink-deep);margin-bottom:8px;">
+            Thread Stop Sequence
+          </div>
+          <table class="tech-specs-table">
+            <tbody id="stopsTableBody"></tbody>
+          </table>
+        </div>
+
+        <div style="border-top:1px solid var(--hairline-soft);padding-top:16px;">
+          <div style="font-size:16px;font-weight:700;color:var(--ink-deep);margin-bottom:4px;">
+            Have a PNG, JPG, or SVG Logo Instead?
+          </div>
+          <p style="font-size:14px;color:var(--slate);margin-bottom:14px;">
+            Read-only inspector cannot create or resize stitches. Compile your artwork into Brother <code>.PES</code> &amp; Tajima <code>.DST</code> in under 2 seconds:
+          </p>
+
+          <!-- Cobalt Primary Buy/Convert CTA (reserved exclusively for right-rail conversion flow) -->
+          <a class="button-buy-cta" href="https://imagetopes.com/">
+            Convert Image to .PES &amp; .DST Online →
+          </a>
+
+          <div class="radio-option-list" style="margin-top:12px;">
+            <a class="radio-option selected" href="https://imagetopes.com/png-to-pes">
+              <div>
+                <strong style="font-size:14px;display:block;">PNG to Brother .PES Converter</strong>
+                <span style="font-size:12px;color:var(--steel);">Transparent logos → SE600 / PE800 / PE900</span>
+              </div>
+              <span style="font-weight:700;color:var(--primary);">Open →</span>
+            </a>
+            <a class="radio-option" href="https://imagetopes.com/svg-to-pes">
+              <div>
+                <strong style="font-size:14px;display:block;">SVG to .PES Vector Digitizer</strong>
+                <span style="font-size:12px;color:var(--steel);">Staggered tatami &amp; two-rail satin columns</span>
+              </div>
+              <span style="font-weight:700;color:var(--primary);">Open →</span>
+            </a>
+            <a class="radio-option" href="https://imagetopes.com/image-to-dst">
+              <div>
+                <strong style="font-size:14px;display:block;">Image to Tajima .DST (--hat Cap Profile)</strong>
+                <span style="font-size:12px;color:var(--steel);">Center-out bottom-up commercial cap sequencing</span>
+              </div>
+              <span style="font-weight:700;color:var(--primary);">Open →</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- 5. Dark Full-Width CLI & Developer Promo Strip (card-promo-strip) -->
+    <section class="card-promo-strip" aria-label="Command Line Interface & ESM Library">
+      <div>
+        <span class="promo-chip" style="margin-bottom:12px;display:inline-block;">Zero-Dependency Node CLI &amp; ESM</span>
+        <h2 style="font-size:32px;font-weight:500;line-height:1.22;margin-bottom:10px;">
+          Automate hoop checks in CI or terminal.
+        </h2>
+        <p style="font-size:16px;color:#d4d8dd;margin-bottom:20px;">
+          Prefer command-line batch verification? Run <code>pes-dst-inspector</code> in Node.js to validate <code>#PES0001</code> PEC offsets and Tajima 512-byte headers—or use the web studio when you need full raster-to-stitch compilation.
+        </p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <a class="button-primary" style="background:#ffffff;color:#0a1317;" href="https://imagetopes.com/">
+            Launch Web Digitizer Studio →
+          </a>
+          <a class="button-secondary" style="border-color:#ffffff;color:#ffffff;" href="https://imagetopes.com/jpg-to-pes">
+            JPG to PES Workflow
+          </a>
+        </div>
+      </div>
+      <div class="cli-snippet">
+        <div># Inspect binary header &amp; 4x4" SA443 hoop fit</div>
+        <div style="color:#4ade80;margin:6px 0 12px;">$ npx pes-dst-inspector royal-crest.pes</div>
+        <div># Emit JSON telemetry for automated pipelines</div>
+        <div style="color:#4ade80;margin-top:6px;">$ npx pes-dst-inspector cap-logo.dst --json</div>
+      </div>
+    </section>
+
+    <!-- 6. Three-Up Workflow Grid (why-buy-tile) -->
+    <section aria-label="Full Embroidery Digitizing Workflows">
+      <h2 class="section-heading">When to Use This Inspector vs. ImageToPES Studio</h2>
+      <p class="editorial-subhead" style="font-size:22px;">
+        Read-only binary diagnostics here. Full auto-trace digitizing on ImageToPES.com.
+      </p>
+
+      <div class="why-buy-grid">
+        <a class="why-buy-tile" href="https://imagetopes.com/png-to-pes">
+          <div>
+            <h3>PNG &amp; JPG to Brother .PES</h3>
+            <p>
+              Turn transparent PNGs and JPG badges into genuine <code>#PES0001</code> files with automatic background removal, color quantization, and Brother 64-color PEC matching.
+            </p>
+          </div>
+          <span style="font-size:14px;font-weight:700;color:var(--primary);">Convert PNG / JPG to PES →</span>
+        </a>
+
+        <a class="why-buy-tile" href="https://imagetopes.com/svg-to-pes">
+          <div>
+            <h3>SVG Vector to Satin &amp; Tatami</h3>
+            <p>
+              Skip Ink/Stitch XML crashes. Compile SVG paths directly into 3.5mm staggered tatami fills, edge-walk underlay, and two-rail satin borders in under two seconds.
+            </p>
+          </div>
+          <span style="font-size:14px;font-weight:700;color:var(--primary);">Convert SVG to PES →</span>
+        </a>
+
+        <a class="why-buy-tile" href="https://imagetopes.com/image-to-dst">
+          <div>
+            <h3>Tajima .DST &amp; Cap (--hat) Sequencing</h3>
+            <p>
+              Generate commercial 512-byte Tajima <code>.DST</code> files with 0.35mm–0.40mm pull compensation and bottom-up center-out cap sequencing for Tajima, Barudan, and Ricoma.
+            </p>
+          </div>
+          <span style="font-size:14px;font-weight:700;color:var(--primary);">Convert Image to DST →</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- 7. Technical FAQ Accordion (faq-accordion-item) -->
+    <section aria-label="Binary Specification FAQ">
+      <h2 class="section-heading">Binary Format Specifications</h2>
+      <div class="faq-stack">
+        <details class="faq-accordion-item" open>
+          <summary>
+            <span>How does Brother #PES0001 store hoop size and thread colors?</span>
+            <span style="color:var(--steel);">▾</span>
+          </summary>
+          <p>
+            A Brother <code>.PES</code> file begins with the 8-byte ASCII signature <code>#PES0001</code> followed by a 32-bit little-endian pointer (at byte <code>0x08</code>) to the <code>PEC</code> stitch block. At <code>pecOffset + 48</code>, the file stores <code>colorCount - 1</code> followed by 1-byte indices into the 64-color Brother PEC thread table. Stitch coordinates follow at <code>pecOffset + 552</code> in <code>0.1mm</code> increments.
+          </p>
+        </details>
+
+        <details class="faq-accordion-item">
+          <summary>
+            <span>Why can't I convert a PNG or SVG inside this open-source inspector?</span>
+            <span style="color:var(--steel);">▾</span>
+          </summary>
+          <p>
+            <code>pes-dst-inspector</code> is a lightweight, zero-dependency binary parser for existing stitch files. Converting raster or vector artwork into machine embroidery requires contour tracing, underlay generation, pull-compensation math, and short-stitch corner routing—available online at <a href="https://imagetopes.com/" style="color:var(--primary);font-weight:700;">ImageToPES.com</a>.
+          </p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer-region">
+    <div class="footer-inner">
+      <div>
+        <strong>pes-dst-inspector</strong> · MIT License · Companion utility by <a href="https://imagetopes.com/" style="color:var(--ink-deep);font-weight:700;">ImageToPES.com</a>
+      </div>
+      <div class="footer-links">
+        <a href="https://imagetopes.com/">Image to PES</a>
+        <a href="https://imagetopes.com/png-to-pes">PNG to PES</a>
+        <a href="https://imagetopes.com/svg-to-pes">SVG to PES</a>
+        <a href="https://imagetopes.com/jpg-to-pes">JPG to PES</a>
+        <a href="https://imagetopes.com/image-to-dst">Image to DST</a>
+        <a href="https://imagetopes.com/pes-file-viewer">3D PES Viewer</a>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import {
+      createSamplePesBytes,
+      createSampleDstBytes,
+      inspectEmbroideryBytes
+    } from './inspector.mjs';
+
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+    const gateBanner = document.getElementById('convertGateBanner');
+    const gateHeading = document.getElementById('convertGateHeading');
+    const btnPes = document.getElementById('btnSamplePes');
+    const btnDst = document.getElementById('btnSampleDst');
+    const hoopBadge = document.getElementById('hoopStatusBadge');
+
+    function renderReport(report) {
+      gateBanner.classList.remove('visible');
+      document.getElementById('fileTitle').textContent = report.fileName + ' (' + report.label + ')';
+      document.getElementById('formatBadge').textContent =
+        report.format === 'PES' ? 'PES #PES0001' : 'DST 512B Header';
+      document.getElementById('wireframeStage').innerHTML = report.svgWireframe;
+      document.getElementById('kpiDimensions').textContent =
+        report.sizeMm.width + ' × ' + report.sizeMm.height + ' mm';
+
+      if (report.hoopFit.fits4x4) {
+        hoopBadge.className = 'badge-status badge-success';
+        hoopBadge.textContent = '✓ Fits 4×4" Hoop (100×100mm)';
+        document.getElementById('kpiHoopFit').textContent = '✓ Fits 4×4" (100×100mm)';
+      } else {
+        hoopBadge.className = 'badge-status badge-attention';
+        hoopBadge.textContent = '▲ Requires 5×7"+ Hoop';
+        document.getElementById('kpiHoopFit').textContent = report.hoopFit.recommendedHoop;
+      }
+
+      document.getElementById('kpiStitches').textContent =
+        report.stitchCount.toLocaleString() + ' / ' + report.jumpCount + ' jumps';
+      document.getElementById('kpiHeaderMeta').textContent =
+        report.format === 'PES'
+          ? '#PES0001 @ ' + report.headerMeta.pecOffset + 'B'
+          : '512B Header · EOF=' + report.headerMeta.hasEofTriplet;
+
+      document.getElementById('swatchCircleList').innerHTML = report.colorStops
+        .map(
+          (s) =>
+            `<span class="color-swatch-circle" style="background:${s.hex}" title="#${s.stopNumber} ${s.brotherThreadName} (${s.stitches} stitches)"></span>`
+        )
+        .join('');
+
+      document.getElementById('stopsTableBody').innerHTML = report.colorStops
+        .map(
+          (s) => `
+          <tr>
+            <td>
+              <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${s.hex};margin-right:6px;"></span>
+              #${s.stopNumber} ${s.brotherThreadName}
+            </td>
+            <td>${s.stitches.toLocaleString()} sts</td>
+          </tr>`
+        )
+        .join('');
+    }
+
+    function handleBytes(bytes, fileName) {
+      try {
+        const report = inspectEmbroideryBytes(bytes, fileName);
+        renderReport(report);
+      } catch (err) {
+        gateHeading.textContent =
+          err.code === 'IMAGE_CONVERSION_REQUIRED'
+            ? `"${fileName}" is an image — convert it to .PES / .DST at ImageToPES.com`
+            : `Cannot inspect "${fileName}": ${err.message}`;
+        gateBanner.classList.add('visible');
+        gateBanner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+
+    btnPes.addEventListener('click', () => {
+      btnPes.classList.add('active');
+      btnDst.classList.remove('active');
+      handleBytes(createSamplePesBytes(), 'sample-royal-crest.pes');
+    });
+
+    btnDst.addEventListener('click', () => {
+      btnDst.classList.add('active');
+      btnPes.classList.remove('active');
+      handleBytes(createSampleDstBytes(), 'sample-cap-logo.dst');
+    });
+
+    dropzone.addEventListener('click', () => fileInput.click());
+    dropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('dragover');
+    });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+    dropzone.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      const file = e.dataTransfer?.files?.[0];
+      if (!file) return;
+      const buf = await file.arrayBuffer();
+      handleBytes(new Uint8Array(buf), file.name);
+    });
+    fileInput.addEventListener('change', async (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const buf = await file.arrayBuffer();
+      handleBytes(new Uint8Array(buf), file.name);
+    });
+
+    handleBytes(createSamplePesBytes(), 'sample-royal-crest.pes');
+  </script>
+</body>
+</html>
